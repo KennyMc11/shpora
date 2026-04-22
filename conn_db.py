@@ -1,11 +1,16 @@
 import sqlite3
 
-def get_users():
+def conn_db_request(request, is_select=False):
     conn = sqlite3.connect('app.db')
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT id, name FROM users")
-        return cursor.fetchall()
+        cursor.execute(request)
+        
+        if is_select:
+            return cursor.fetchall()
+        else:
+            conn.commit()  # ВАЖНО: сохраняем изменения
+            return cursor.rowcount  # возвращаем количество вставленных строк
     finally:
         conn.close()
 
